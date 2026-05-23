@@ -1,0 +1,726 @@
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação Personalizada</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{coral:'#FF7A3D',mint:'#7ED6AE',cream:'#F8F6F2',dark:'#1F1F1F'}}}}
+</script>
+<style>
+body{font-family:'Poppins',sans-serif;background:#F8F6F2;color:#1F1F1F;}
+.font-montserrat{font-family:'Montserrat',sans-serif;}
+.glass{background:rgba(255,255,255,0.82);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.6);}
+.glass-soft{background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.3);}
+
+/* Screens */
+.screen{display:none;min-height:100vh;padding:40px 20px;align-items:center;justify-content:center;}
+.screen.active{display:flex;animation:fadeUp .45s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+
+/* Options */
+.opt-btn{transition:all .22s cubic-bezier(.22,1,.36,1);cursor:pointer;border:2px solid #EBEBEB;background:#fff;}
+.opt-btn:hover{border-color:#FF7A3D;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,122,61,.13);}
+.opt-btn.selected{border-color:#FF7A3D;background:rgba(255,122,61,.06);transform:scale(.98);}
+
+/* Sex cards */
+.sex-card{transition:all .22s cubic-bezier(.22,1,.36,1);cursor:pointer;border:2px solid #EBEBEB;background:#fff;border-radius:20px;padding:28px 20px;text-align:center;flex:1;}
+.sex-card:hover{border-color:#FF7A3D;transform:translateY(-3px);box-shadow:0 12px 32px rgba(255,122,61,.13);}
+.sex-card.selected{border-color:#FF7A3D;background:rgba(255,122,61,.06);}
+
+/* Progress */
+.progress-fill{transition:width .55s cubic-bezier(.4,0,.2,1);}
+
+/* Pulse */
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,122,61,.4);}50%{box-shadow:0 0 0 14px rgba(255,122,61,0);}}
+.pulse-glow{animation:pulseGlow 2s infinite;}
+
+/* IMC glow */
+@keyframes imcGlow{0%,100%{text-shadow:0 0 20px rgba(255,122,61,.3);}50%{text-shadow:0 0 40px rgba(255,122,61,.55);}}
+.imc-glow{animation:imcGlow 3s ease-in-out infinite;}
+
+/* Loading bar */
+@keyframes loadPulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+
+/* Scale in */
+@keyframes scaleIn{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.scale-in{animation:scaleIn .7s cubic-bezier(.22,1,.36,1) forwards;}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:all .7s cubic-bezier(.22,1,.36,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* Timeline */
+.timeline-line{position:absolute;left:27px;top:70px;bottom:20px;width:2px;background:linear-gradient(to bottom,#FF7A3D,#7ED6AE);border-radius:2px;}
+
+/* Input */
+input[type=number],input[type=text],input[type=tel]{transition:border-color .2s,box-shadow .2s;}
+input:focus{outline:none;border-color:#FF7A3D;box-shadow:0 0 0 3px rgba(255,122,61,.12);}
+
+/* Info screen decorative */
+.stat-ring{width:120px;height:120px;border-radius:50%;border:6px solid #FF7A3D;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+
+/* Benefit card hover */
+.benefit-card{transition:all .3s ease;}
+.benefit-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.08);}
+
+/* OMS scale */
+.oms-bar{height:14px;border-radius:8px;overflow:hidden;display:flex;gap:3px;}
+.oms-seg{flex:1;border-radius:4px;}
+</style>
+</head>
+<body class="w-full">
+
+<!-- ===================== HERO ===================== -->
+<div class="screen active" id="s-hero" style="background:linear-gradient(135deg,#FDF1EE 0%,#F8F6F2 60%,#EEF7F2 100%);">
+  <div class="max-w-5xl w-full mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+    <div class="flex-1 text-center lg:text-left">
+      <span class="inline-block px-5 py-2 rounded-full text-sm font-medium mb-7 bg-coral/10 text-coral border border-coral/20">Avaliação gratuita · 3 minutos</span>
+      <h1 class="font-montserrat font-bold leading-tight mb-5 text-4xl lg:text-5xl">Descubra o que está <span class="text-coral">bloqueando</span> seu emagrecimento.</h1>
+      <p class="text-lg leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0 text-dark/65">Responda a avaliação e receba um diagnóstico real para o seu corpo e rotina.</p>
+      <div class="flex gap-6 mb-10 justify-center lg:justify-start text-sm text-dark/45 flex-wrap">
+        <span>✔ 2.400+ avaliações</span>
+        <span>✔ Profissionais certificados</span>
+        <span>✔ Resultado gratuito</span>
+      </div>
+      <button class="px-10 py-5 rounded-full font-semibold text-lg shadow-lg transition-all duration-300 hover:-translate-y-1 pulse-glow bg-coral text-white" onclick="go('s-lead')">Começar agora →</button>
+    </div>
+    <div class="flex-1 max-w-sm w-full">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1522898467493-49726bf28798?q=80&w=800&auto=format&fit=crop" class="w-full rounded-3xl shadow-2xl object-cover aspect-[4/5]">
+        <div class="absolute bottom-5 left-[-16px] bg-white rounded-2xl px-5 py-4 shadow-xl flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-mint/20 flex items-center justify-center text-lg">🏅</div>
+          <div><p class="text-sm font-semibold">Profissionais certificados</p><p class="text-xs text-dark/45">Nutricionistas especializadas</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S1: LEAD ===================== -->
+<div class="screen" id="s-lead">
+  <div class="max-w-md w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="text-center mb-8">
+        <p class="text-xs font-semibold text-coral uppercase tracking-widest mb-2">Etapa 1 de 10</p>
+        <h2 class="font-montserrat font-bold text-2xl">Vamos começar</h2>
+        <p class="text-dark/50 text-sm mt-2">Só o essencial para personalizar seu diagnóstico.</p>
+      </div>
+      <div class="space-y-4">
+        <input id="f-name" type="text" placeholder="Seu nome" class="w-full p-4 rounded-2xl border-2 border-gray-200 text-base bg-cream">
+        <input id="f-phone" type="tel" placeholder="WhatsApp (00) 00000-0000" class="w-full p-4 rounded-2xl border-2 border-gray-200 text-base bg-cream">
+        <div>
+          <p class="text-sm text-dark/60 mb-3 font-medium">Você é:</p>
+          <div class="flex gap-3">
+            <div class="sex-card" onclick="selectSex(this,'F')">
+              <div class="text-3xl mb-2">👩</div>
+              <p class="font-semibold text-sm">Feminino</p>
+            </div>
+            <div class="sex-card" onclick="selectSex(this,'M')">
+              <div class="text-3xl mb-2">👨</div>
+              <p class="font-semibold text-sm">Masculino</p>
+            </div>
+            <div class="sex-card" onclick="selectSex(this,'O')">
+              <div class="text-3xl mb-2">🧑</div>
+              <p class="font-semibold text-sm">Outro</p>
+            </div>
+          </div>
+        </div>
+        <button class="w-full py-4 rounded-2xl font-semibold text-base bg-coral text-white mt-2 hover:bg-coral/90 transition" onclick="submitLead()">Continuar →</button>
+        <p class="text-center text-xs text-dark/30">🔒 Seus dados estão protegidos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S2: QUIZ 1 ===================== -->
+<div class="screen" id="s-q1">
+  <div class="max-w-xl w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="mb-7">
+        <div class="flex justify-between text-xs text-dark/40 mb-2"><span id="prog-label-1">Pergunta 1 de 7</span><span id="prog-pct-1">14%</span></div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:14%"></div></div>
+      </div>
+      <h3 class="font-semibold text-lg mb-1" id="q1-title">O que mais te incomoda hoje?</h3>
+      <p class="text-sm text-dark/45 mb-6" id="q1-sub">Escolha o que mais ressoa com você.</p>
+      <div class="space-y-3">
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-info1')">😔 Autoestima e confiança em baixa</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-info1')">👗 Roupas não servem mais</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-info1')">😩 Energia baixa e cansaço constante</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-info1')">😰 Preocupação com a saúde</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-info1')">😥 Vergonha do próprio corpo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S3: INFO 1 ===================== -->
+<div class="screen" id="s-info1">
+  <div class="max-w-md w-full">
+    <div class="glass rounded-3xl p-10 shadow-2xl text-center">
+      <div class="stat-ring mb-6">
+        <div><p class="font-montserrat font-bold text-3xl text-coral">72%</p></div>
+      </div>
+      <h2 class="font-montserrat font-bold text-2xl mb-3">Você não está sozinha.</h2>
+      <p class="text-dark/60 text-sm leading-relaxed mb-8">72% das mulheres que chegam até nós tentaram pelo menos 3 métodos diferentes antes de encontrar um que realmente funcionasse para sua rotina e corpo.</p>
+      <div class="flex gap-3 justify-center mb-8">
+        <div class="bg-cream rounded-2xl p-4 text-center flex-1">
+          <p class="font-bold text-coral text-xl">3x</p>
+          <p class="text-xs text-dark/50 mt-1">mais eficaz com acompanhamento</p>
+        </div>
+        <div class="bg-cream rounded-2xl p-4 text-center flex-1">
+          <p class="font-bold text-coral text-xl">94%</p>
+          <p class="text-xs text-dark/50 mt-1">mantêm o resultado em 6 meses</p>
+        </div>
+      </div>
+      <button class="w-full py-4 rounded-full bg-coral text-white font-semibold pulse-glow transition hover:bg-coral/90" onclick="go('s-q2')">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S4: QUIZ 2 ===================== -->
+<div class="screen" id="s-q2">
+  <div class="max-w-xl w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="mb-7">
+        <div class="flex justify-between text-xs text-dark/40 mb-2"><span>Pergunta 2 de 7</span><span>29%</span></div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:29%"></div></div>
+      </div>
+      <h3 class="font-semibold text-lg mb-1">Já tentou emagrecer antes?</h3>
+      <p class="text-sm text-dark/45 mb-6">O que costuma acontecer.</p>
+      <div class="space-y-3">
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q3')">🎢 Efeito sanfona — perco e recupero sempre</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q3')">😤 Começo bem mas não consigo manter</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q3')">🤷 Faço tudo certo e não perco peso</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q3')">🌱 Primeira vez que vou me comprometer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S5: QUIZ 3 ===================== -->
+<div class="screen" id="s-q3">
+  <div class="max-w-xl w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="mb-7">
+        <div class="flex justify-between text-xs text-dark/40 mb-2"><span>Pergunta 3 de 7</span><span>43%</span></div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:43%"></div></div>
+      </div>
+      <h3 class="font-semibold text-lg mb-1">Sua relação com a comida</h3>
+      <p class="text-sm text-dark/45 mb-6">Isso define muito a estratégia certa para você.</p>
+      <div class="space-y-3">
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-depo1')">🍫 Como muito quando estou ansiosa ou triste</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-depo1')">🕐 Belisco o dia todo, sem horários</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-depo1')">🍽️ Como bem de dia, erro à noite</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-depo1')">✅ Boa relação, mas mesmo assim não emagreço</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S6: DEPOIMENTO 1 ===================== -->
+<div class="screen" id="s-depo1">
+  <div class="max-w-md w-full">
+    <div class="glass rounded-3xl p-10 shadow-2xl">
+      <div class="text-center mb-6">
+        <span class="inline-block px-4 py-1.5 rounded-full bg-mint/15 text-green-700 text-xs font-semibold">Resultado real</span>
+      </div>
+      <div class="flex items-center gap-4 mb-6">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=200&auto=format&fit=crop&face" class="w-16 h-16 rounded-full object-cover shadow">
+        <div>
+          <p class="font-semibold text-sm">Camila R., 34 anos</p>
+          <p class="text-xs text-dark/45">São Paulo, SP</p>
+          <div class="flex gap-0.5 mt-1">⭐⭐⭐⭐⭐</div>
+        </div>
+      </div>
+      <p class="text-dark/70 text-sm leading-relaxed mb-6">"Tentei sozinha por 2 anos. Com acompanhamento, perdi 11kg em 3 meses sem passar fome. O que mudou foi ter uma estratégia feita pra minha rotina, não uma dieta genérica."</p>
+      <div class="flex gap-3">
+        <div class="bg-coral/8 rounded-xl p-3 text-center flex-1">
+          <p class="font-bold text-coral">−11kg</p>
+          <p class="text-xs text-dark/45">em 90 dias</p>
+        </div>
+        <div class="bg-mint/10 rounded-xl p-3 text-center flex-1">
+          <p class="font-bold text-green-700">Manteve</p>
+          <p class="text-xs text-dark/45">após 6 meses</p>
+        </div>
+      </div>
+      <button class="w-full mt-7 py-4 rounded-full bg-coral text-white font-semibold pulse-glow transition hover:bg-coral/90" onclick="go('s-q4')">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S7: QUIZ 4 ===================== -->
+<div class="screen" id="s-q4">
+  <div class="max-w-xl w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="mb-7">
+        <div class="flex justify-between text-xs text-dark/40 mb-2"><span>Pergunta 4 de 7</span><span>57%</span></div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:57%"></div></div>
+      </div>
+      <h3 class="font-semibold text-lg mb-1">Como é sua rotina?</h3>
+      <p class="text-sm text-dark/45 mb-6">A estratégia precisa caber na sua vida real.</p>
+      <div class="space-y-3">
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q5')">⏰ Muito corrida, pouco tempo para mim</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q5')">👶 Trabalho + filhos + casa</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q5')">💻 Trabalho sentada o dia todo</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q5')">😓 Muito estresse, pouca energia</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S8: QUIZ 5 ===================== -->
+<div class="screen" id="s-q5">
+  <div class="max-w-xl w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="mb-7">
+        <div class="flex justify-between text-xs text-dark/40 mb-2"><span>Pergunta 5 de 7</span><span>71%</span></div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:71%"></div></div>
+      </div>
+      <h3 class="font-semibold text-lg mb-1">Como quer se sentir daqui 3 meses?</h3>
+      <p class="text-sm text-dark/45 mb-6">Seu objetivo principal.</p>
+      <div class="space-y-3">
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q6')">💪 Mais confiante e leve no corpo</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q6')">👗 Usando roupas que gosto</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q6')">⚡ Com mais energia e disposição</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-q6')">❤️ Com saúde e autoestima em alta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S9: QUIZ 6 — INVESTIMENTO ===================== -->
+<div class="screen" id="s-q6">
+  <div class="max-w-xl w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="mb-7">
+        <div class="flex justify-between text-xs text-dark/40 mb-2"><span>Pergunta 6 de 7</span><span>86%</span></div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:86%"></div></div>
+      </div>
+      <h3 class="font-semibold text-lg mb-1">Toparia investir num acompanhamento?</h3>
+      <p class="text-sm text-dark/45 mb-6">Sem compromisso — só para personalizar seu resultado.</p>
+      <div class="space-y-3">
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-biometria')">💪 Sim, quero priorizar isso agora</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickQ(this,'s-biometria')">🤔 Sim, dependendo da proposta</button>
+        <button class="opt-btn w-full text-left px-5 py-4 rounded-2xl text-sm" onclick="pickFinancialLow(this)">⏳ Talvez futuramente</button>
+      </div>
+      <div id="financial-note" class="hidden mt-5 p-4 rounded-2xl bg-cream text-dark/60 text-xs leading-relaxed">Tudo bem. Veja seu diagnóstico mesmo assim — pode ser o que faltava para você decidir. 👇</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== S10: BIOMETRIA ===================== -->
+<div class="screen" id="s-biometria">
+  <div class="max-w-md w-full">
+    <div class="glass rounded-3xl p-8 shadow-2xl">
+      <div class="mb-7">
+        <div class="flex justify-between text-xs text-dark/40 mb-2"><span>Pergunta 7 de 7</span><span>100%</span></div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:100%"></div></div>
+      </div>
+      <h3 class="font-semibold text-lg mb-1">Última etapa</h3>
+      <p class="text-sm text-dark/45 mb-6">Para calcular seu IMC com precisão.</p>
+      <div class="space-y-4">
+        <div class="relative">
+          <input id="in-height" type="number" placeholder="Altura" min="130" max="220" class="w-full p-5 rounded-2xl border-2 border-gray-200 text-base bg-cream pr-16">
+          <span class="absolute right-5 top-1/2 -translate-y-1/2 text-sm text-dark/40 font-medium">cm</span>
+        </div>
+        <div class="relative">
+          <input id="in-weight" type="number" placeholder="Peso atual" min="40" max="200" class="w-full p-5 rounded-2xl border-2 border-gray-200 text-base bg-cream pr-16">
+          <span class="absolute right-5 top-1/2 -translate-y-1/2 text-sm text-dark/40 font-medium">kg</span>
+        </div>
+        <button class="w-full py-4 rounded-2xl bg-coral text-white font-semibold text-base hover:bg-coral/90 transition pulse-glow" onclick="goLoading()">Ver meu diagnóstico →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LOADING ===================== -->
+<div class="screen" id="s-loading">
+  <div class="max-w-sm w-full">
+    <div class="glass rounded-3xl p-12 shadow-2xl text-center">
+      <div class="w-20 h-20 mx-auto mb-8 rounded-full bg-gradient-to-br from-coral to-mint flex items-center justify-center">
+        <i data-lucide="sparkles" class="text-white" style="width:32px;height:32px;"></i>
+      </div>
+      <p class="text-dark/40 text-xs mb-3" id="loading-name-txt"></p>
+      <p class="text-base font-medium text-dark mb-8" id="loading-msg">Analisando perfil metabólico...</p>
+      <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div id="loading-bar" class="progress-fill h-full bg-gradient-to-r from-coral to-mint rounded-full" style="width:0%"></div>
+      </div>
+      <p class="text-xs text-dark/30 mt-4">Baseado nas diretrizes da OMS</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== RESULTADO ===================== -->
+<div class="screen" id="s-result" style="align-items:flex-start;padding-top:60px;">
+  <div class="max-w-3xl w-full mx-auto pb-20">
+
+    <!-- Badge -->
+    <div class="text-center mb-10 reveal">
+      <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-coral/10 to-mint/10 border border-coral/20 mb-4">
+        <i data-lucide="award" class="text-coral" style="width:15px;height:15px;"></i>
+        <span class="text-sm font-medium text-coral">Diagnóstico personalizado concluído</span>
+      </div>
+      <h2 class="font-montserrat font-bold text-3xl md:text-4xl mb-2" id="r-title">Seu resultado</h2>
+      <p class="text-dark/50 text-sm" id="r-sub"></p>
+    </div>
+
+    <!-- IMC Card -->
+    <div class="relative rounded-[2rem] p-0.5 bg-gradient-to-br from-coral/30 via-transparent to-mint/30 mb-8 reveal">
+      <div class="bg-white/90 backdrop-blur-xl rounded-[1.8rem] p-10 text-center">
+        <p class="text-xs text-dark/40 uppercase tracking-widest mb-4">Seu IMC</p>
+        <span class="text-8xl font-bold bg-gradient-to-br from-coral to-coral/60 bg-clip-text text-transparent imc-glow" id="r-imc">--</span>
+        <div class="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-coral/10 to-mint/10 mt-4 mb-2">
+          <p class="font-semibold text-dark/80 text-sm" id="r-class"></p>
+        </div>
+        <p class="text-xs text-dark/35 mb-8">Calculado segundo os parâmetros da Organização Mundial da Saúde</p>
+
+        <!-- OMS Scale -->
+        <div class="max-w-md mx-auto">
+          <div class="oms-bar mb-2">
+            <div class="oms-seg bg-blue-300/70"></div>
+            <div class="oms-seg bg-green-400/70"></div>
+            <div class="oms-seg bg-yellow-400/70"></div>
+            <div class="oms-seg bg-orange-400/70"></div>
+            <div class="oms-seg bg-red-400/70"></div>
+          </div>
+          <div class="relative h-4 mb-1">
+            <div id="oms-indicator" class="absolute top-0 w-4 h-4 rounded-full bg-coral border-2 border-white shadow-lg transition-all duration-700" style="left:40%;transform:translateX(-50%)"></div>
+          </div>
+          <div class="flex justify-between text-xs text-dark/35">
+            <span>Baixo peso</span><span>Normal</span><span>Sobrepeso</span><span>Ob.I</span><span>Ob.II+</span>
+          </div>
+        </div>
+
+        <!-- OMS Table -->
+        <div class="mt-8 bg-cream rounded-2xl p-5 text-left max-w-md mx-auto">
+          <p class="text-xs font-semibold text-dark/50 uppercase tracking-wide mb-3">Classificação OMS</p>
+          <div class="space-y-2">
+            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-100" id="oms-row-0">
+              <span class="text-dark/60">Baixo peso</span><span class="font-medium text-blue-500">&lt; 18,5</span>
+            </div>
+            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-100" id="oms-row-1">
+              <span class="text-dark/60">Peso normal</span><span class="font-medium text-green-600">18,5 – 24,9</span>
+            </div>
+            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-100" id="oms-row-2">
+              <span class="text-dark/60">Sobrepeso</span><span class="font-medium text-yellow-600">25,0 – 29,9</span>
+            </div>
+            <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-100" id="oms-row-3">
+              <span class="text-dark/60">Obesidade grau I</span><span class="font-medium text-orange-500">30,0 – 34,9</span>
+            </div>
+            <div class="flex justify-between items-center text-xs py-1.5" id="oms-row-4">
+              <span class="text-dark/60">Obesidade grau II+</span><span class="font-medium text-red-500">≥ 35,0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Análise emocional -->
+    <div class="glass rounded-[1.5rem] p-8 mb-8 reveal">
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center">
+          <i data-lucide="heart-pulse" class="text-mint" style="width:20px;height:20px;"></i>
+        </div>
+        <div>
+          <p class="text-dark/80 font-medium leading-relaxed mb-3" id="r-emo1"></p>
+          <p class="text-dark/55 text-sm leading-relaxed" id="r-emo2"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insights 3 cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 reveal">
+      <div class="glass-soft rounded-2xl p-5 text-center">
+        <div class="text-2xl mb-2">🎯</div>
+        <p class="text-xs font-semibold text-dark mb-1">Seu maior bloqueio</p>
+        <p class="text-xs text-dark/55 leading-relaxed" id="ins-block"></p>
+      </div>
+      <div class="glass-soft rounded-2xl p-5 text-center">
+        <div class="text-2xl mb-2">🧬</div>
+        <p class="text-xs font-semibold text-dark mb-1">Estratégia indicada</p>
+        <p class="text-xs text-dark/55 leading-relaxed" id="ins-strategy"></p>
+      </div>
+      <div class="glass-soft rounded-2xl p-5 text-center">
+        <div class="text-2xl mb-2">📅</div>
+        <p class="text-xs font-semibold text-dark mb-1">Prazo estimado</p>
+        <p class="text-xs text-dark/55 leading-relaxed" id="ins-timeline"></p>
+      </div>
+    </div>
+
+    <!-- Comparativo -->
+    <div class="mb-8 reveal">
+      <h3 class="font-montserrat font-bold text-center text-xl mb-6">Por que métodos comuns falham?</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="rounded-2xl p-7 border border-red-100 bg-white">
+          <h4 class="font-semibold text-dark/40 text-xs uppercase tracking-wide mb-4">Métodos comuns</h4>
+          <ul class="space-y-3 text-sm text-dark/60">
+            <li class="flex items-center gap-2"><i data-lucide="x" class="text-red-400 flex-shrink-0" style="width:15px;height:15px;"></i>Dietas restritivas e genéricas</li>
+            <li class="flex items-center gap-2"><i data-lucide="x" class="text-red-400 flex-shrink-0" style="width:15px;height:15px;"></i>Efeito sanfona constante</li>
+            <li class="flex items-center gap-2"><i data-lucide="x" class="text-red-400 flex-shrink-0" style="width:15px;height:15px;"></i>Sem estratégia sustentável</li>
+            <li class="flex items-center gap-2"><i data-lucide="x" class="text-red-400 flex-shrink-0" style="width:15px;height:15px;"></i>Abandono por falta de suporte</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl p-7 border border-mint/30 bg-white">
+          <h4 class="font-semibold text-dark text-xs uppercase tracking-wide mb-4">Acompanhamento estratégico</h4>
+          <ul class="space-y-3 text-sm text-dark/80">
+            <li class="flex items-center gap-2"><i data-lucide="check" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Personalizado para sua rotina</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Resultados duradouros</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Reeducação alimentar real</li>
+            <li class="flex items-center gap-2"><i data-lucide="check" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Suporte profissional contínuo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="mb-8 reveal">
+      <h3 class="font-montserrat font-bold text-center text-xl mb-10">Sua jornada de transformação</h3>
+      <div class="max-w-2xl mx-auto relative">
+        <div class="timeline-line"></div>
+        <div class="space-y-7">
+          <div class="flex gap-5 items-start relative">
+            <div class="flex-shrink-0 z-10 w-14 h-14 rounded-full bg-gradient-to-br from-coral to-coral/70 text-white font-bold text-base flex items-center justify-center shadow-lg shadow-coral/20">30d</div>
+            <div class="flex-1 glass rounded-2xl p-6 shadow-sm">
+              <h4 class="font-semibold text-sm mb-1">Adaptação e início</h4>
+              <p class="text-dark/60 text-xs leading-relaxed">Plano alimentar ajustado, primeiros hábitos criados, metabolismo começando a responder.</p>
+            </div>
+          </div>
+          <div class="flex gap-5 items-start relative">
+            <div class="flex-shrink-0 z-10 w-14 h-14 rounded-full bg-gradient-to-br from-coral/70 to-mint/70 text-white font-bold text-base flex items-center justify-center shadow-lg">60d</div>
+            <div class="flex-1 glass rounded-2xl p-6 shadow-sm">
+              <h4 class="font-semibold text-sm mb-1">Consistência e resultados visíveis</h4>
+              <p class="text-dark/60 text-xs leading-relaxed">Corpo já respondendo, energia em alta, mudanças visíveis no espelho e nas roupas.</p>
+            </div>
+          </div>
+          <div class="flex gap-5 items-start relative">
+            <div class="flex-shrink-0 z-10 w-14 h-14 rounded-full bg-gradient-to-br from-mint/70 to-mint text-white font-bold text-base flex items-center justify-center shadow-lg shadow-mint/25">90d</div>
+            <div class="flex-1 glass rounded-2xl p-6 shadow-sm">
+              <h4 class="font-semibold text-sm mb-1">Transformação consolidada</h4>
+              <p class="text-dark/60 text-xs leading-relaxed">Hábitos fixados, resultado mantido, nova relação com o corpo e a alimentação.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Autoridade -->
+    <div class="glass rounded-3xl p-8 md:p-10 mb-8 flex flex-col md:flex-row items-center gap-8 reveal">
+      <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300&auto=format&fit=crop" class="w-28 h-28 rounded-full object-cover shadow-xl flex-shrink-0">
+      <div>
+        <h3 class="font-montserrat font-bold text-lg mb-1">Dra. [Nome da Profissional]</h3>
+        <p class="text-xs text-dark/45 mb-3">Nutricionista clínica · CRN 00000 · Especialista em emagrecimento</p>
+        <p class="text-dark/70 text-sm leading-relaxed">"Cada pessoa tem um metabolismo, uma rotina e uma história. Um plano genérico nunca vai funcionar a longo prazo. É por isso que cada acompanhamento aqui começa exatamente onde você está."</p>
+      </div>
+    </div>
+
+    <!-- Depoimentos -->
+    <div class="mb-10 reveal">
+      <h3 class="font-montserrat font-bold text-center text-xl mb-7">Quem já transformou</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="glass rounded-2xl p-6 shadow">
+          <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=200&auto=format&fit=crop" class="w-12 h-12 rounded-full object-cover mb-4">
+          <p class="text-xs text-dark/65 leading-relaxed mb-3">"Perdi 11kg em 3 meses sem passar fome. O plano foi feito pra minha rotina."</p>
+          <p class="text-xs font-semibold">Camila R., 34 anos <span class="text-coral">−11kg</span></p>
+        </div>
+        <div class="glass rounded-2xl p-6 shadow">
+          <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=80&w=200&auto=format&fit=crop" class="w-12 h-12 rounded-full object-cover mb-4">
+          <p class="text-xs text-dark/65 leading-relaxed mb-3">"Depois de anos de efeito sanfona, finalmente mantive o resultado. 8kg em 60 dias."</p>
+          <p class="text-xs font-semibold">Fernanda L., 41 anos <span class="text-coral">−8kg</span></p>
+        </div>
+        <div class="glass rounded-2xl p-6 shadow">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop" class="w-12 h-12 rounded-full object-cover mb-4">
+          <p class="text-xs text-dark/65 leading-relaxed mb-3">"Achei que não ia conseguir com minha rotina de mãe. Em 90 dias perdi 14kg."</p>
+          <p class="text-xs font-semibold">Ana Paula M., 38 anos <span class="text-coral">−14kg</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Planos -->
+    <div class="mb-10 reveal">
+      <h3 class="font-montserrat font-bold text-center text-xl mb-2">Escolha seu ciclo</h3>
+      <p class="text-center text-sm text-dark/50 mb-8">Comece pelo que faz sentido para você agora.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-3xl p-8 border-2 border-gray-100 bg-white hover:border-coral/30 transition-all hover:shadow-lg hover:-translate-y-1">
+          <h4 class="font-montserrat font-bold text-lg mb-1">Ciclo Inicial</h4>
+          <p class="text-xs text-dark/45 mb-5">30 dias de acompanhamento</p>
+          <p class="text-4xl font-bold text-coral mb-1">R$250</p>
+          <p class="text-xs text-dark/35 mb-6">ou 3× de R$85</p>
+          <ul class="space-y-2.5 mb-7 text-xs text-dark/70">
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Plano alimentar personalizado</li>
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Estratégia adaptada à rotina</li>
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>2 ajustes estratégicos no mês</li>
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Suporte via WhatsApp</li>
+          </ul>
+          <button onclick="openWA()" class="w-full py-3.5 rounded-2xl border-2 border-coral text-coral font-semibold text-sm hover:bg-coral hover:text-white transition">Quero o Ciclo Inicial</button>
+        </div>
+        <div class="rounded-3xl p-8 border-2 border-coral/35 bg-gradient-to-br from-coral/5 to-white shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-coral text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">⭐ Mais escolhido</div>
+          <h4 class="font-montserrat font-bold text-lg mb-1 mt-2">Transformação Completa</h4>
+          <p class="text-xs text-dark/45 mb-5">90 dias de acompanhamento</p>
+          <p class="text-4xl font-bold text-coral mb-1">R$650</p>
+          <p class="text-xs text-dark/35 mb-6">ou 6× de R$115 · economia de R$100</p>
+          <ul class="space-y-2.5 mb-7 text-xs text-dark/70">
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-coral flex-shrink-0" style="width:15px;height:15px;"></i>Tudo do Ciclo Inicial</li>
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-coral flex-shrink-0" style="width:15px;height:15px;"></i>Acompanhamento semanal</li>
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-coral flex-shrink-0" style="width:15px;height:15px;"></i>Ajustes ilimitados no plano</li>
+            <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-coral flex-shrink-0" style="width:15px;height:15px;"></i>Consolidação de hábitos</li>
+          </ul>
+          <button onclick="openWA()" class="w-full py-3.5 rounded-2xl bg-coral text-white font-semibold text-sm pulse-glow hover:bg-coral/90 transition shadow-lg">Quero a Transformação</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA final -->
+    <div class="text-center reveal">
+      <button onclick="openWA()" class="inline-flex items-center gap-3 px-10 py-5 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 pulse-glow bg-coral text-white mb-4">
+        <i data-lucide="message-circle" style="width:22px;height:22px;"></i> Falar com uma especialista
+      </button>
+      <p class="text-xs text-dark/35">+380 pessoas iniciaram o acompanhamento este mês</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+let userName='', userSex='';
+
+/* ---- navigation ---- */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ---- sex select ---- */
+function selectSex(el,val){
+  document.querySelectorAll('.sex-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  userSex=val;
+}
+
+/* ---- lead submit ---- */
+function submitLead(){
+  const name=document.getElementById('f-name').value.trim();
+  const phone=document.getElementById('f-phone').value.trim();
+  if(!name||!phone){alert('Preencha nome e WhatsApp para continuar.');return;}
+  if(!userSex){alert('Selecione seu sexo para continuar.');return;}
+  userName=name;
+  // personalise q1
+  document.getElementById('q1-sub').textContent=name.split(' ')[0]+', escolha o que mais ressoa com você.';
+  go('s-q1');
+}
+
+/* ---- quiz pick (auto-advance) ---- */
+function pickQ(btn, next){
+  btn.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setTimeout(()=>go(next), 370);
+}
+
+/* ---- financial low ---- */
+function pickFinancialLow(btn){
+  btn.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('financial-note').classList.remove('hidden');
+  setTimeout(()=>go('s-biometria'), 2400);
+}
+
+/* ---- loading → result ---- */
+function goLoading(){
+  const h=parseFloat(document.getElementById('in-height').value)/100;
+  const w=parseFloat(document.getElementById('in-weight').value);
+  if(!h||!w||h<1||w<30){alert('Preencha altura e peso.');return;}
+  const imc=parseFloat((w/(h*h)).toFixed(1));
+  go('s-loading');
+  document.getElementById('loading-name-txt').textContent=userName.split(' ')[0]+', analisando seu perfil...';
+  const msgs=['Analisando perfil metabólico...','Identificando padrões emocionais...','Calculando estratégia ideal...','Preparando diagnóstico personalizado...'];
+  let i=0;
+  const bar=document.getElementById('loading-bar');
+  const txt=document.getElementById('loading-msg');
+  function next(){
+    if(i<msgs.length){txt.textContent=msgs[i];bar.style.width=((i+1)/msgs.length*100)+'%';i++;setTimeout(next,1350);}
+    else buildResult(imc);
+  }
+  setTimeout(next,400);
+}
+
+/* ---- build result ---- */
+function buildResult(imc){
+  // OMS classification
+  let cls,emoColor,block,strategy,timeline,emo1,emo2,indicatorPct,omsRow;
+  if(imc<18.5){
+    cls='Baixo peso';block='Déficit calórico inconsciente';strategy='Recomposição corporal saudável';timeline='Resultados em 45–60 dias';
+    emo1='Seu peso está abaixo do ideal para a sua saúde.';emo2='Um acompanhamento nutricional pode recuperar sua energia e equilíbrio de forma segura.';
+    indicatorPct=10;omsRow=0;
+  }else if(imc<25){
+    cls='Peso normal';block='Estagnação ou perda de tônus';strategy='Recomposição e otimização metabólica';timeline='Transformação visível em 45 dias';
+    emo1='Seu IMC está dentro da faixa saudável pela OMS.';emo2='Mesmo assim, composição corporal, energia e bem-estar podem melhorar muito com estratégia certa.';
+    indicatorPct=30;omsRow=1;
+  }else if(imc<30){
+    cls='Sobrepeso';block='Desregulação metabólica e hábitos';strategy='Protocolo anti-inflamatório personalizado';timeline='Primeiros 5kg em até 30 dias';
+    emo1='Seu IMC indica sobrepeso — uma das categorias mais comuns e com maior potencial de reversão.';emo2='Com a estratégia certa, resultados reais aparecem em semanas, não meses.';
+    indicatorPct=55;omsRow=2;
+  }else if(imc<35){
+    cls='Obesidade grau I';block='Resistência metabólica e inflamação';strategy='Reprogramação alimentar gradual';timeline='8–12kg nos primeiros 90 dias';
+    emo1='Seu diagnóstico indica obesidade grau I segundo a OMS.';emo2='É um ponto de atenção, mas com acompanhamento contínuo e estratégia adaptada à sua rotina, a transformação é completamente alcançável.';
+    indicatorPct=73;omsRow=3;
+  }else{
+    cls='Obesidade grau II+';block='Ciclo vicioso de dietas e desistências';strategy='Acompanhamento intensivo e suporte emocional';timeline='Até 15kg com protocolo de 90 dias';
+    emo1='Seu IMC indica obesidade grau II ou superior pela classificação da OMS.';emo2='Esse nível exige atenção especializada e suporte próximo — e é exatamente o que o acompanhamento oferece, de forma segura e sustentável.';
+    indicatorPct=90;omsRow=4;
+  }
+
+  const first=userName.split(' ')[0];
+  document.getElementById('r-title').textContent='Resultado de '+first;
+  document.getElementById('r-sub').textContent='Baseado nas suas respostas e nas diretrizes da Organização Mundial da Saúde.';
+  document.getElementById('r-imc').textContent=imc.toFixed(1);
+  document.getElementById('r-class').textContent=cls+' — IMC '+imc.toFixed(1);
+  document.getElementById('r-emo1').textContent=emo1;
+  document.getElementById('r-emo2').textContent=emo2;
+  document.getElementById('ins-block').textContent=block;
+  document.getElementById('ins-strategy').textContent=strategy;
+  document.getElementById('ins-timeline').textContent=timeline;
+
+  // OMS indicator position
+  document.getElementById('oms-indicator').style.left=indicatorPct+'%';
+
+  // highlight OMS row
+  for(let r=0;r<5;r++){
+    const row=document.getElementById('oms-row-'+r);
+    row.classList.remove('bg-coral/8','rounded-lg','font-semibold');
+    row.querySelectorAll('span').forEach(s=>s.classList.remove('text-coral'));
+  }
+  const activeRow=document.getElementById('oms-row-'+omsRow);
+  activeRow.classList.add('bg-coral/8','rounded-lg');
+  activeRow.querySelectorAll('span').forEach(s=>{s.classList.add('text-coral','font-semibold');});
+
+  // whatsapp link
+  const msg=encodeURIComponent('Olá! Fiz a avaliação personalizada e quero saber mais sobre o acompanhamento. Meu nome é '+userName+'.');
+  document.querySelectorAll('[onclick="openWA()"]').forEach(()=>{});
+  window._waMsg=msg;
+
+  go('s-result');
+  lucide.createIcons();
+
+  // scroll reveal
+  setTimeout(()=>{
+    const obs=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+    },{threshold:0.1});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  },200);
+}
+
+function openWA(){
+  const msg=window._waMsg||encodeURIComponent('Olá! Fiz a avaliação e quero saber mais sobre o acompanhamento. Meu nome é '+userName+'.');
+  window.open('https://wa.me/5500000000000?text='+msg,'_blank');
+}
+</script>
+</body>
+</html>
