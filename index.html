@@ -738,10 +738,34 @@ function buildResult(imc){
   activeRow.classList.add('bg-coral/8','rounded-lg');
   activeRow.querySelectorAll('span').forEach(s=>{s.classList.add('text-coral','font-semibold');});
 
-  // whatsapp link
-  const msg=encodeURIComponent('Olá! Fiz a avaliação personalizada e quero saber mais sobre o acompanhamento. Meu nome é '+userName+'.');
-  document.querySelectorAll('[onclick="openWA()"]').forEach(()=>{});
-  window._waMsg=msg;
+  // WhatsApp inteligente
+
+  const diagnosis = imc >= 30
+  ? 'Seu perfil mostra forte tendência ao efeito sanfona e dificuldade metabólica.'
+  : imc >= 25
+  ? 'Seu perfil mostra sinais de dificuldade de constância e possível impacto emocional no emagrecimento.'
+  : 'Seu perfil mostra potencial para uma recomposição corporal saudável e sustentável.';
+
+  const objetivo =
+  Object.values(quizAnswers)[0] || '-';
+
+  const dificuldade =
+  Object.values(quizAnswers)[1] || '-';
+
+  const whatsappText = `Olá! Acabei de finalizar minha avaliação.
+
+Nome: ${userName}
+IMC: ${imc.toFixed(1)}
+Objetivo: ${objetivo}
+
+Maior dificuldade: ${dificuldade}
+
+Mini diagnóstico:
+${diagnosis}
+
+Gostaria de entender qual estratégia seria ideal para mim.`;
+
+  window._waMsg = encodeURIComponent(whatsappText);
 
   go('s-result');
   lucide.createIcons();
@@ -757,7 +781,7 @@ function buildResult(imc){
 
 function openWA(){
   const msg=window._waMsg||encodeURIComponent('Olá! Fiz a avaliação e quero saber mais sobre o acompanhamento. Meu nome é '+userName+'.');
-  window.open('https://wa.me/5500000000000?text='+msg,'_blank');
+  window.open('https://wa.me/5575998855519?text='+msg,'_blank');
 }
 </script>
 </body>
