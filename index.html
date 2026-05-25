@@ -586,9 +586,13 @@ input:focus{outline:none;border-color:#FF7A3D;box-shadow:0 0 0 3px rgba(255,122,
   </div>
 </div>
 
-<script>
 lucide.createIcons();
+
 let userName='', userSex='';
+let userGoal='';
+let userDifficulty='';
+
+let quizAnswers = {};
 
 /* ---- navigation ---- */
 function go(id){
@@ -618,9 +622,20 @@ function submitLead(){
 
 /* ---- quiz pick (auto-advance) ---- */
 function pickQ(btn, next){
-  btn.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+
+  btn.parentElement.querySelectorAll('.opt-btn')
+  .forEach(b=>b.classList.remove('selected'));
+
   btn.classList.add('selected');
+
+  const questionTitle = btn.closest('.glass').querySelector('h3');
+
+  if(questionTitle){
+    quizAnswers[questionTitle.innerText] = btn.innerText;
+  }
+
   setTimeout(()=>go(next), 370);
+
 }
 
 /* ---- financial low ---- */
@@ -652,6 +667,29 @@ function goLoading(){
 
 /* ---- build result ---- */
 function buildResult(imc){
+  fetch("https://formspree.io/f/mlgvpdar", {
+
+  method: "POST",
+
+  headers: {
+    "Content-Type": "application/json"
+  },
+
+  body: JSON.stringify({
+
+    nome: userName,
+
+    sexo: userSex,
+
+    whatsapp: document.getElementById('f-phone').value,
+
+    imc: imc,
+
+    respostas: quizAnswers
+
+  })
+
+});
   // OMS classification
   let cls,emoColor,block,strategy,timeline,emo1,emo2,indicatorPct,omsRow;
   if(imc<18.5){
