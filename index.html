@@ -593,6 +593,7 @@ lucide.createIcons();
 let userName='', userSex='';
 let userGoal='';
 let userDifficulty='';
+let selectedPlan='';
 
 let quizAnswers = {};
 
@@ -779,6 +780,30 @@ Gostaria de entender qual estratégia seria ideal para mim.`;
     },{threshold:0.1});
     document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   },200);
+}
+
+function choosePlan(plan){
+
+  selectedPlan = plan;
+
+  const whatsappText = `Olá! Acabei de finalizar minha avaliação.
+
+Nome: ${userName}
+
+IMC: ${document.getElementById('r-imc').textContent}
+
+Plano escolhido: ${selectedPlan}
+
+Objetivo: ${Object.values(quizAnswers)[0] || '-'}
+
+Maior dificuldade: ${Object.values(quizAnswers)[1] || '-'}
+
+Gostaria de entender qual estratégia seria ideal para mim.`;
+
+  window.open(
+    'https://wa.me/5575998855519?text=' + encodeURIComponent(whatsappText),
+    '_blank'
+  );
 }
 
 function openWA(){
