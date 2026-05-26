@@ -556,7 +556,7 @@ input:focus{outline:none;border-color:#FF7A3D;box-shadow:0 0 0 3px rgba(255,122,
             <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>2 ajustes estratégicos no mês</li>
             <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-mint flex-shrink-0" style="width:15px;height:15px;"></i>Suporte via WhatsApp</li>
           </ul>
-          <button onclick="openWA()" class="w-full py-3.5 rounded-2xl border-2 border-coral text-coral font-semibold text-sm hover:bg-coral hover:text-white transition">Quero o Ciclo Inicial</button>
+          <button onclick="choosePlan('Ciclo Inicial — 30 dias')" class="w-full py-3.5 rounded-2xl border-2 border-coral text-coral font-semibold text-sm hover:bg-coral hover:text-white transition">Quero o Ciclo Inicial</button>
         </div>
         <div class="rounded-3xl p-8 border-2 border-coral/35 bg-gradient-to-br from-coral/5 to-white shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 relative">
           <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-coral text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">⭐ Mais escolhido</div>
@@ -570,7 +570,7 @@ input:focus{outline:none;border-color:#FF7A3D;box-shadow:0 0 0 3px rgba(255,122,
             <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-coral flex-shrink-0" style="width:15px;height:15px;"></i>Ajustes ilimitados no plano</li>
             <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="text-coral flex-shrink-0" style="width:15px;height:15px;"></i>Consolidação de hábitos</li>
           </ul>
-          <button onclick="openWA()" class="w-full py-3.5 rounded-2xl bg-coral text-white font-semibold text-sm pulse-glow hover:bg-coral/90 transition shadow-lg">Quero a Transformação</button>
+          <button onclick="choosePlan('Transformação Completa — 90 dias')" class="w-full py-3.5 rounded-2xl bg-coral text-white font-semibold text-sm pulse-glow hover:bg-coral/90 transition shadow-lg">Quero a Transformação</button>
         </div>
       </div>
     </div>
@@ -785,6 +785,28 @@ Gostaria de entender qual estratégia seria ideal para mim.`;
 function choosePlan(plan){
 
   selectedPlan = plan;
+
+  fetch("https://formspree.io/f/mlgvpdar", {
+
+  method: "POST",
+
+  headers: {
+    "Content-Type": "application/json"
+  },
+
+  body: JSON.stringify({
+
+    nome: userName,
+
+    whatsapp: document.getElementById('f-phone').value,
+
+    plano_escolhido: selectedPlan,
+
+    respostas: quizAnswers
+
+  })
+
+});
 
   const whatsappText = `Olá! Acabei de finalizar minha avaliação.
 
