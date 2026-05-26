@@ -782,43 +782,85 @@ Gostaria de entender qual estratégia seria ideal para mim.`;
   },200);
 }
 
+function cleanText(text){
+  return text
+    .replace(/[^\p{L}\p{N}\s.,!?()-]/gu, '')
+    .trim();
+}
+
+function cleanText(text){
+  return text
+    .replace(/[^\p{L}\p{N}\s.,!?()-]/gu, '')
+    .trim();
+}
+
 function choosePlan(plan){
 
   selectedPlan = plan;
 
+  const objetivo =
+    cleanText(Object.values(quizAnswers)[0] || '-');
+
+  const dificuldade =
+    cleanText(Object.values(quizAnswers)[1] || '-');
+
+  const imc =
+    document.getElementById('r-imc').textContent;
+
+  let diagnosis = '';
+
+  if(parseFloat(imc) >= 30){
+    diagnosis =
+    'Seu perfil mostra forte tendência ao efeito sanfona e dificuldade metabólica.';
+  }
+  else if(parseFloat(imc) >= 25){
+    diagnosis =
+    'Seu perfil mostra sinais de dificuldade de constância e possível impacto emocional no emagrecimento.';
+  }
+  else{
+    diagnosis =
+    'Seu perfil mostra potencial para uma recomposição corporal saudável e sustentável.';
+  }
+
   fetch("https://formspree.io/f/mlgvpdar", {
 
-  method: "POST",
+    method: "POST",
 
-  headers: {
-    "Content-Type": "application/json"
-  },
+    headers: {
+      "Content-Type": "application/json"
+    },
 
-  body: JSON.stringify({
+    body: JSON.stringify({
 
-    nome: userName,
+      nome: userName,
 
-    whatsapp: document.getElementById('f-phone').value,
+      whatsapp: document.getElementById('f-phone').value,
 
-    plano_escolhido: selectedPlan,
+      plano_escolhido: selectedPlan,
 
-    respostas: quizAnswers
+      objetivo: objetivo,
 
-  })
+      dificuldade: dificuldade,
 
-});
+      imc: imc
+
+    })
+
+  });
 
   const whatsappText = `Olá! Acabei de finalizar minha avaliação.
 
 Nome: ${userName}
-
-IMC: ${document.getElementById('r-imc').textContent}
+IMC: ${imc}
 
 Plano escolhido: ${selectedPlan}
 
-Objetivo: ${Object.values(quizAnswers)[0] || '-'}
+Objetivo: ${objetivo}
 
-Maior dificuldade: ${Object.values(quizAnswers)[1] || '-'}
+Maior dificuldade: ${dificuldade}
+
+Mini diagnóstico:
+${diagnosis}
 
 Gostaria de entender qual estratégia seria ideal para mim.`;
 
